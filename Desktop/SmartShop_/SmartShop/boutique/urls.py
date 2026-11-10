@@ -14,5 +14,6 @@ urlpatterns=[
  path('deconnexion/',auth_views.LogoutView.as_view(),name='deconnexion'),
  path('commander/',views.commander,name='commander'),
  path('mes-commandes/',views.mes_commandes,name='mes_commandes'),
+ path('mes-commandes/annuler/<int:commande_id>/',views.annuler_commande,name='annuler_commande'),
  path('consentement/',views.consentement,name='consentement'),
 ]

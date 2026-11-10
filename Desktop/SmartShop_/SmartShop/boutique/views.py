@@ -110,6 +110,22 @@ def mes_commandes(request):
     return render(request,'mes_commandes.html',{'commandes':Commande.objects.filter(utilisateur=request.user).order_by('-id')})
 
 @login_required
+@require_POST
+def annuler_commande(request, commande_id):
+    commande = get_object_or_404(Commande, pk=commande_id, utilisateur=request.user)
+    if commande.statut == 'simulation':
+        with transaction.atomic():
+            for ligne in commande.lignes.select_related('produit'):
+                ligne.produit.stock += ligne.quantite
+                ligne.produit.save(update_fields=['stock'])
+            commande.statut = 'annulee'
+            commande.save(update_fields=['statut'])
+        messages.success(request, f'La commande #{commande.pk} a été annulée avec succès.')
+    else:
+        messages.warning(request, 'Cette commande ne peut plus être annulée.')
+    return redirect('mes_commandes')
+
+@login_required
 def commander(request):
     articles,total=lignes_panier(request)
     if not articles:
