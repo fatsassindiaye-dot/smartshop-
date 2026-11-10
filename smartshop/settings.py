@@ -4,8 +4,12 @@ from dotenv import load_dotenv
 BASE_DIR=Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR/'.env')
 SECRET_KEY=os.getenv('DJANGO_SECRET_KEY','dev-only-insecure-change-before-deploy')
-DEBUG=os.getenv('DJANGO_DEBUG','1')=='1'
-ALLOWED_HOSTS=[x.strip() for x in os.getenv('DJANGO_ALLOWED_HOSTS','127.0.0.1,localhost').split(',') if x.strip()]
+DEBUG=os.getenv('DJANGO_DEBUG','1')=='False'
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "smartshop-goiu.onrender.com",
+]
 INSTALLED_APPS=['django.contrib.admin','django.contrib.auth','django.contrib.contenttypes','django.contrib.sessions','django.contrib.messages','django.contrib.staticfiles','boutique','analytics']
 MIDDLEWARE=['django.middleware.security.SecurityMiddleware','whitenoise.middleware.WhiteNoiseMiddleware','django.contrib.sessions.middleware.SessionMiddleware','django.middleware.common.CommonMiddleware','django.middleware.csrf.CsrfViewMiddleware','django.contrib.auth.middleware.AuthenticationMiddleware','django.contrib.messages.middleware.MessageMiddleware','django.middleware.clickjacking.XFrameOptionsMiddleware']
 ROOT_URLCONF='smartshop.urls'
