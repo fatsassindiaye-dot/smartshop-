@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- ===== HERO BANNER ===== -->
+<section class="hero py-5" style="background: linear-gradient(135deg, #0d213f 0%, #174276 50%, #1f6fb2 100%); position: relative; overflow: hidden;">
+  <div class="container py-4">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7 text-white">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3 text-uppercase" style="letter-spacing: 1px;">
+          ✨ NOUVELLE COLLECTION 2026
+        </span>
+        <h1 class="display-4 fw-black lh-1 mb-3" style="font-weight: 800;">
+          Bienvenue sur <span class="text-warning">SmartShop</span>
+        </h1>
+        <p class="lead text-light opacity-90 mb-4" style="max-width: 580px;">
+          Smartphones dernière génération, mode tendance, chaussures de sport, parfums et décoration. Le meilleur shopping en ligne au Sénégal et en Afrique de l'Ouest.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'produits' %}" class="btn btn-warning btn-lg rounded-pill px-4 fw-bold shadow">
+            🛍️ Découvrir le catalogue
+          </a>
+          <a href="#categories" class="btn btn-outline-light btn-lg rounded-pill px-4">
+            Explorer les rayons
+          </a>
+        </div>
+
+        <!-- Avantages rapides -->
+        <div class="d-flex flex-wrap gap-4 mt-5 pt-3 border-top border-light border-opacity-25 small">
+          <div class="d-flex align-items-center gap-2">
+            <span class="fs-5">🚀</span>
+            <span>Livraison rapide</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fs-5">🔒</span>
+            <span>Paiement sécurisé</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fs-5">⭐</span>
+            <span>Produits garantis</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5 d-none d-lg-block text-center">
+        <div class="position-relative d-inline-block">
+          <img
+            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=700&q=85"
+            alt="Shopping SmartShop"
+            class="img-fluid rounded-4 shadow-lg"
+            style="max-height: 420px; object-fit: cover; border: 4px solid rgba(255,255,255,0.2);"
+          >
+          <!-- Badge flottant promo -->
+          <div class="position-absolute bottom-0 start-0 translate-middle-y bg-white text-dark p-3 rounded-4 shadow-lg ms-n3 text-start border" style="max-width: 220px;">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="fs-4">🔥</span>
+              <strong class="small fw-bold">Top Tendances</strong>
+            </div>
+            <p class="mb-0 text-muted small" style="font-size: 0.75rem;">Plus de 500 articles disponibles dès aujourd'hui</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RAYONS / CATÉGORIES ===== -->
+<section id="categories" class="py-5 bg-white">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="text-primary fw-bold text-uppercase small" style="letter-spacing: 1.5px;">Sélection par rayon</span>
+      <h2 class="h2 fw-bold mt-1">Parcourez nos catégories</h2>
+      <p class="text-muted">Trouvez rapidement ce que vous cherchez parmi nos gammes sélectionnées</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Téléphones -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'produits' %}?categorie=telephone" class="text-decoration-none group">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 hover-card">
+            <div style="height: 120px; overflow: hidden;" class="bg-light">
+              <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80" alt="Téléphones" class="w-100 h-100 object-fit-cover transition">
+            </div>
+            <div class="p-3">
+              <div class="fw-bold text-dark small">📱 Téléphones</div>
+              <small class="text-muted" style="font-size: 0.75rem;">Smartphones & Tech</small>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Mode -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'produits' %}?categorie=vetement" class="text-decoration-none group">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 hover-card">
+            <div style="height: 120px; overflow: hidden;" class="bg-light">
+              <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80" alt="Vêtements" class="w-100 h-100 object-fit-cover transition">
+            </div>
+            <div class="p-3">
+              <div class="fw-bold text-dark small">👗 Vêtements</div>
+              <small class="text-muted" style="font-size: 0.75rem;">Mode Homme & Femme</small>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Chaussures -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'produits' %}?categorie=chaussure" class="text-decoration-none group">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 hover-card">
+            <div style="height: 120px; overflow: hidden;" class="bg-light">
+              <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80" alt="Chaussures" class="w-100 h-100 object-fit-cover transition">
+            </div>
+            <div class="p-3">
+              <div class="fw-bold text-dark small">👟 Chaussures</div>
+              <small class="text-muted" style="font-size: 0.75rem;">Baskets & Ville</small>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Beauté -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'produits' %}?categorie=cosmetique" class="text-decoration-none group">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 hover-card">
+            <div style="height: 120px; overflow: hidden;" class="bg-light">
+              <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80" alt="Cosmétiques" class="w-100 h-100 object-fit-cover transition">
+            </div>
+            <div class="p-3">
+              <div class="fw-bold text-dark small">✨ Beauté</div>
+              <small class="text-muted" style="font-size: 0.75rem;">Parfums & Soins</small>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Accessoires -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'produits' %}?categorie=accessoire" class="text-decoration-none group">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 hover-card">
+            <div style="height: 120px; overflow: hidden;" class="bg-light">
+              <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80" alt="Accessoires" class="w-100 h-100 object-fit-cover transition">
+            </div>
+            <div class="p-3">
+              <div class="fw-bold text-dark small">⌚ Accessoires</div>
+              <small class="text-muted" style="font-size: 0.75rem;">Montres, Sacs, Audio</small>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Maison -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'produits' %}?categorie=maison" class="text-decoration-none group">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 hover-card">
+            <div style="height: 120px; overflow: hidden;" class="bg-light">
+              <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80" alt="Maison" class="w-100 h-100 object-fit-cover transition">
+            </div>
+            <div class="p-3">
+              <div class="fw-bold text-dark small">🏡 Maison</div>
+              <small class="text-muted" style="font-size: 0.75rem;">Déco & Lampes</small>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NOUVEAUTÉS / PRODUITS EN VEDETTE ===== -->
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="section-title h3 fw-bold mb-1">🔥 Nos articles populaires</h2>
+      <p class="text-muted small mb-0">Des produits de qualité supérieure avec photos studio détaillées.</p>
+    </div>
+    <a href="{% url 'produits' %}" class="btn btn-outline-primary rounded-pill px-3">
+      Tout afficher ({{ produits|length }}+) →
+    </a>
+  </div>
+
+  <div class="row g-4">
+    {% for produit in produits %}
+      {% include '_carte.html' %}
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info rounded-4 p-4 text-center">
+          <p class="mb-2">Aucun produit pour le moment.</p>
+          <small>Lancez <code>python manage.py produits_demo</code> pour créer le catalogue de démonstration.</small>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Bannière promo intermédiaire -->
+  <div class="my-5 p-4 p-md-5 rounded-4 text-white position-relative overflow-hidden shadow" style="background: linear-gradient(120deg, #1264a5 0%, #0d213f 100%);">
+    <div class="row align-items-center position-relative" style="z-index: 2;">
+      <div class="col-md-8">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-3 fw-bold">OFFRE DU MOMENT</span>
+        <h3 class="h2 fw-bold mb-2">Des milliers d'articles au meilleur prix</h3>
+        <p class="lead text-light opacity-90 mb-0">Commandez en quelques clics avec un suivi en temps réel de votre commande.</p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{% url 'produits' %}" class="btn btn-light btn-lg rounded-pill px-4 text-primary fw-bold shadow">
+          Voir les offres
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barre de confiance / garanties -->
+  <div class="feature-strip mt-4 shadow-sm border-0">
+    <div class="d-flex align-items-center gap-3">
+      <span class="fs-2">🚚</span>
+      <div>
+        <strong>Livraison Express</strong>
+        <small class="d-block text-muted">Directement à votre domicile</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <span class="fs-2">🔒</span>
+      <div>
+        <strong>Sécurité Maximale</strong>
+        <small class="d-block text-muted">Comptes et données protégés</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <span class="fs-2">✨</span>
+      <div>
+        <strong>Qualité Contrôlée</strong>
+        <small class="d-block text-muted">Produits authentiques vérifiés</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <span class="fs-2">💬</span>
+      <div>
+        <strong>Support Client</strong>
+        <small class="d-block text-muted">À votre écoute 7j/7</small>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,519 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="catalogue-wrapper">
+
+  <!-- ===== EN-TÊTE CATALOGUE ===== -->
+  <div class="catalogue-hero">
+    <div class="container">
+      <h1 class="catalogue-title">Notre catalogue</h1>
+      <p class="catalogue-subtitle">Découvrez nos produits sélectionnés avec soin</p>
+    </div>
+  </div>
+
+  <div class="container catalogue-body">
+
+    <!-- ===== BARRE DE RECHERCHE ===== -->
+    <form id="search-form" class="search-block" method="get" autocomplete="off">
+
+      <!-- Champ recherche avec icône et bouton effacer -->
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          id="search-input"
+          class="search-input"
+          type="text"
+          name="q"
+          value="{{ q }}"
+          placeholder="Rechercher un produit, une marque…"
+          aria-label="Rechercher un produit"
+        >
+        {% if q %}
+        <a href="{% url 'produits' %}" class="search-clear" title="Effacer la recherche">✕</a>
+        {% endif %}
+        <!-- Suggestions live -->
+        <div id="suggestions-box" class="suggestions-box" hidden></div>
+      </div>
+
+      <!-- Filtre catégorie -->
+      <div class="filter-select-wrap">
+        <span class="filter-icon">📂</span>
+        <select id="cat-select" class="filter-select" name="categorie" aria-label="Filtrer par catégorie">
+          <option value="">Toutes les catégories</option>
+          {% for valeur, libelle in categories %}
+          <option value="{{ valeur }}" {% if categorie == valeur %}selected{% endif %}>{{ libelle }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Filtre prix max -->
+      <div class="filter-select-wrap">
+        <span class="filter-icon">💰</span>
+        <select id="prix-select" class="filter-select" name="prix_max" aria-label="Filtrer par prix">
+          <option value="" {% if not prix_max %}selected{% endif %}>Tous les prix</option>
+          <option value="10000"  {% if prix_max == '10000'  %}selected{% endif %}>Moins de 10 000 FCFA</option>
+          <option value="50000"  {% if prix_max == '50000'  %}selected{% endif %}>Moins de 50 000 FCFA</option>
+          <option value="100000" {% if prix_max == '100000' %}selected{% endif %}>Moins de 100 000 FCFA</option>
+          <option value="300000" {% if prix_max == '300000' %}selected{% endif %}>Moins de 300 000 FCFA</option>
+        </select>
+      </div>
+
+      <!-- Tri -->
+      <div class="filter-select-wrap">
+        <span class="filter-icon">↕️</span>
+        <select id="tri-select" class="filter-select" name="tri" aria-label="Trier les produits">
+          <option value=""          {% if not tri %}selected{% endif %}>Plus récents</option>
+          <option value="prix_asc"  {% if tri == 'prix_asc'  %}selected{% endif %}>Prix croissant</option>
+          <option value="prix_desc" {% if tri == 'prix_desc' %}selected{% endif %}>Prix décroissant</option>
+          <option value="nom"       {% if tri == 'nom'       %}selected{% endif %}>Nom A → Z</option>
+        </select>
+      </div>
+
+      <!-- Bouton rechercher -->
+      <button type="submit" class="btn-search" id="btn-search">
+        <span class="btn-search-icon">🔍</span>
+        <span class="btn-search-label">Rechercher</span>
+      </button>
+
+    </form>
+
+    <!-- ===== TAGS ACTIFS ===== -->
+    {% if q or categorie or prix_max or tri %}
+    <div class="active-filters">
+      <span class="filters-label">Filtres actifs :</span>
+      {% if q %}
+      <span class="filter-tag">
+        🔍 "{{ q }}"
+        <a href="?{% if categorie %}categorie={{ categorie }}&{% endif %}{% if prix_max %}prix_max={{ prix_max }}&{% endif %}{% if tri %}tri={{ tri }}{% endif %}" class="tag-remove">✕</a>
+      </span>
+      {% endif %}
+      {% if categorie %}
+      <span class="filter-tag">
+        📂 {{ categorie }}
+        <a href="?{% if q %}q={{ q }}&{% endif %}{% if prix_max %}prix_max={{ prix_max }}&{% endif %}{% if tri %}tri={{ tri }}{% endif %}" class="tag-remove">✕</a>
+      </span>
+      {% endif %}
+      {% if prix_max %}
+      <span class="filter-tag">
+        💰 max {{ prix_max|floatformat:0 }} FCFA
+        <a href="?{% if q %}q={{ q }}&{% endif %}{% if categorie %}categorie={{ categorie }}&{% endif %}{% if tri %}tri={{ tri }}{% endif %}" class="tag-remove">✕</a>
+      </span>
+      {% endif %}
+      <a href="{% url 'produits' %}" class="clear-all">✕ Tout effacer</a>
+    </div>
+    {% endif %}
+
+    <!-- ===== COMPTEUR DE RÉSULTATS ===== -->
+    <div class="results-bar">
+      <span class="results-count" id="results-count">
+        {% if produits|length == 0 %}
+          Aucun produit trouvé
+        {% elif produits|length == 1 %}
+          1 produit trouvé
+        {% else %}
+          {{ produits|length }} produits trouvés
+        {% endif %}
+      </span>
+      {% if q %}
+      <span class="results-query">pour « <strong>{{ q }}</strong> »</span>
+      {% endif %}
+    </div>
+
+    <!-- ===== GRILLE PRODUITS ===== -->
+    {% if produits %}
+    <div class="row g-4" id="products-grid">
+      {% for produit in produits %}
+        {% include '_carte.html' %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <!-- État vide -->
+    <div class="empty-state">
+      <div class="empty-icon">🔎</div>
+      <h3 class="empty-title">Aucun produit trouvé</h3>
+      <p class="empty-text">
+        Essayez avec d'autres mots-clés ou
+        <a href="{% url 'produits' %}">réinitialisez les filtres</a>.
+      </p>
+      <a href="{% url 'produits' %}" class="btn-reset">Voir tous les produits</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- ===== STYLES SPÉCIFIQUES CATALOGUE ===== -->
+<style>
+/* ---------- Wrapper ---------- */
+.catalogue-wrapper { background: #f5f7fb; min-height: 100vh; }
+
+/* ---------- Hero ---------- */
+.catalogue-hero {
+  background: linear-gradient(120deg, #102c59, #1264a5);
+  color: #fff;
+  padding: 48px 0 36px;
+  margin-bottom: 0;
+}
+.catalogue-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 0 0 6px;
+}
+.catalogue-subtitle {
+  font-size: 1rem;
+  color: #c8dff7;
+  margin: 0;
+}
+
+/* ---------- Corps ---------- */
+.catalogue-body { padding-top: 32px; padding-bottom: 60px; }
+
+/* ---------- Barre de recherche ---------- */
+.search-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 24px rgba(18,100,165,.10);
+  margin-bottom: 20px;
+}
+
+/* Champ texte */
+.search-input-wrap {
+  position: relative;
+  flex: 1 1 280px;
+  min-width: 220px;
+}
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  padding: 12px 40px 12px 44px;
+  border: 2px solid #e3eaf3;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #172337;
+  background: #f7fafd;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+.search-input:focus {
+  border-color: #1264a5;
+  box-shadow: 0 0 0 4px rgba(18,100,165,.12);
+  background: #fff;
+}
+.search-clear {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color .15s;
+}
+.search-clear:hover { color: #e74c3c; }
+
+/* Suggestions */
+.suggestions-box {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: #fff;
+  border: 1px solid #e3eaf3;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(18,100,165,.13);
+  z-index: 999;
+  overflow: hidden;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  cursor: pointer;
+  font-size: .95rem;
+  color: #172337;
+  transition: background .15s;
+  text-decoration: none;
+}
+.suggestion-item:hover, .suggestion-item.active {
+  background: #eef5fd;
+  color: #1264a5;
+}
+.suggestion-item .sug-icon { font-size: 1.1rem; }
+.suggestion-item .sug-cat {
+  margin-left: auto;
+  font-size: .78rem;
+  color: #94a3b8;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* Filtres select */
+.filter-select-wrap {
+  position: relative;
+  flex: 0 1 180px;
+  min-width: 150px;
+}
+.filter-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+.filter-select {
+  width: 100%;
+  padding: 12px 12px 12px 38px;
+  border: 2px solid #e3eaf3;
+  border-radius: 12px;
+  font-size: .9rem;
+  color: #172337;
+  background: #f7fafd;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color .2s;
+  outline: none;
+}
+.filter-select:focus {
+  border-color: #1264a5;
+  box-shadow: 0 0 0 3px rgba(18,100,165,.1);
+}
+
+/* Bouton recherche */
+.btn-search {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1264a5, #0f4a7f);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  white-space: nowrap;
+}
+.btn-search:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(18,100,165,.35);
+}
+.btn-search:active { transform: translateY(0); }
+
+/* ---------- Filtres actifs ---------- */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: .9rem;
+}
+.filters-label { color: #64748b; font-weight: 600; }
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #dbeafe;
+  color: #1264a5;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: .85rem;
+  font-weight: 600;
+}
+.tag-remove {
+  color: #1264a5;
+  text-decoration: none;
+  font-size: .8rem;
+  opacity: .7;
+}
+.tag-remove:hover { opacity: 1; }
+.clear-all {
+  color: #e74c3c;
+  font-size: .85rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 8px;
+}
+.clear-all:hover { text-decoration: underline; }
+
+/* ---------- Compteur résultats ---------- */
+.results-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e8eef6;
+}
+.results-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #172337;
+}
+.results-query { color: #64748b; font-size: .95rem; }
+
+/* ---------- État vide ---------- */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+.empty-icon { font-size: 5rem; margin-bottom: 16px; }
+.empty-title { font-size: 1.5rem; font-weight: 700; color: #172337; margin-bottom: 10px; }
+.empty-text { color: #64748b; margin-bottom: 28px; }
+.empty-text a { color: #1264a5; }
+.btn-reset {
+  display: inline-block;
+  background: linear-gradient(135deg, #1264a5, #0f4a7f);
+  color: #fff;
+  border-radius: 12px;
+  padding: 12px 32px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-reset:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(18,100,165,.35);
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#products-grid > .col-sm-6 {
+  animation: fadeInUp .35s ease both;
+}
+{% for i in "123456789" %}
+#products-grid > .col-sm-6:nth-child({{ forloop.counter }}) {
+  animation-delay: {{ forloop.counter0 }}0ms;
+}
+{% endfor %}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .search-block { padding: 14px; gap: 10px; }
+  .btn-search-label { display: none; }
+  .btn-search { padding: 12px 16px; }
+  .catalogue-hero { padding: 32px 0 24px; }
+}
+</style>
+
+<!-- ===== SCRIPT SUGGESTIONS LIVE ===== -->
+<script>
+(function () {
+  const input      = document.getElementById('search-input');
+  const box        = document.getElementById('suggestions-box');
+  const form       = document.getElementById('search-form');
+
+  // Données produits disponibles côté client pour les suggestions
+  const produitsCatalogue = [
+    {% for produit in tous_produits %}
+    { nom: "{{ produit.nom|escapejs }}", cat: "{{ produit.get_categorie_display|escapejs }}", pk: {{ produit.pk }} },
+    {% endfor %}
+  ];
+
+  let activeIdx = -1;
+  let timer = null;
+
+  function filtrer(q) {
+    if (!q || q.length < 2) return [];
+    const ql = q.toLowerCase();
+    return produitsCatalogue
+      .filter(p => p.nom.toLowerCase().includes(ql) || p.cat.toLowerCase().includes(ql))
+      .slice(0, 7);
+  }
+
+  function afficher(resultats) {
+    box.innerHTML = '';
+    activeIdx = -1;
+    if (!resultats.length) { box.hidden = true; return; }
+
+    resultats.forEach((p, i) => {
+      const a = document.createElement('a');
+      a.className = 'suggestion-item';
+      a.href = '/produits/?q=' + encodeURIComponent(p.nom);
+      a.innerHTML = `
+        <span class="sug-icon">🛍️</span>
+        <span>${highlight(p.nom, input.value)}</span>
+        <span class="sug-cat">${p.cat}</span>
+      `;
+      a.addEventListener('mousedown', e => {
+        e.preventDefault();
+        input.value = p.nom;
+        box.hidden = true;
+        form.submit();
+      });
+      box.appendChild(a);
+    });
+    box.hidden = false;
+  }
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return text.replace(re, '<strong>$1</strong>');
+  }
+
+  function updateActive() {
+    const items = box.querySelectorAll('.suggestion-item');
+    items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+  }
+
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => afficher(filtrer(input.value)), 120);
+  });
+
+  input.addEventListener('keydown', e => {
+    const items = box.querySelectorAll('.suggestion-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIdx = Math.min(activeIdx + 1, items.length - 1);
+      updateActive();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIdx = Math.max(activeIdx - 1, -1);
+      updateActive();
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      e.preventDefault();
+      items[activeIdx].dispatchEvent(new MouseEvent('mousedown'));
+    } else if (e.key === 'Escape') {
+      box.hidden = true;
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (!box.contains(e.target) && e.target !== input) box.hidden = true;
+  });
+
+  // Soumettre automatiquement sur changement de filtre
+  ['cat-select', 'prix-select', 'tri-select'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => form.submit());
+  });
+})();
+</script>
+
+{% endblock %}

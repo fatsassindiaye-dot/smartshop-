@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+        <div class="row g-0">
+          <!-- Côté visuel avec photo -->
+          <div class="col-md-5 d-none d-md-block position-relative" style="background: linear-gradient(135deg, #0d213f 0%, #174276 100%);">
+            <img
+              src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=800&q=80"
+              alt="Boutique SmartShop"
+              class="w-100 h-100 object-fit-cover opacity-75"
+            >
+            <div class="position-absolute bottom-0 start-0 p-4 text-white" style="background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);">
+              <h3 class="h4 fw-bold mb-2">Ravi de vous revoir !</h3>
+              <p class="small text-light opacity-90 mb-0">Accédez à votre panier, gérez vos commandes et explorez les nouveautés du catalogue.</p>
+            </div>
+          </div>
+
+          <!-- Formulaire de connexion -->
+          <div class="col-md-7 p-4 p-lg-5">
+            <div class="mb-4">
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill small fw-bold mb-2">ESPACE CLIENT</span>
+              <h1 class="h3 fw-bold mb-1">Connexion</h1>
+              <p class="text-muted small">Connectez-vous pour retrouver vos commandes.</p>
+            </div>
+
+            <form method="post" novalidate>
+              {% csrf_token %}
+
+              {% for field in form %}
+                <div class="mb-3">
+                  <label class="form-label fw-semibold small text-muted" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                  </label>
+                  {{ field }}
+                  {% for error in field.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+
+              <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm mt-3">
+                Se connecter
+              </button>
+            </form>
+
+            <div class="text-center mt-4 pt-3 border-top small text-muted">
+              Pas encore de compte ?
+              <a href="{% url 'inscription' %}" class="fw-bold text-primary text-decoration-none ms-1">
+                Créer un compte
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

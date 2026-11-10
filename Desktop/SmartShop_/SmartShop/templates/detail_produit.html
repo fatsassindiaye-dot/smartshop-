@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Fil d'Ariane -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'accueil' %}" class="text-decoration-none">Accueil</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'produits' %}" class="text-decoration-none">Catalogue</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ produit.nom }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-5 align-items-center">
+    <!-- Photo du produit en haute définition -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white p-2">
+        <div class="detail-photo position-relative rounded-4 overflow-hidden bg-light" style="min-height: 440px;">
+          {% if produit.image %}
+            <img src="{{ produit.image.url }}" alt="{{ produit.nom }}" class="w-100 h-100 object-fit-cover shadow-sm">
+          {% elif produit.image_demo_url %}
+            <img src="{{ produit.image_demo_url }}" alt="{{ produit.nom }}" class="w-100 h-100 object-fit-cover shadow-sm">
+          {% else %}
+            <div class="d-flex align-items-center justify-content-center h-100 fs-1">🛍️</div>
+          {% endif %}
+          <span class="badge bg-white text-dark shadow-sm position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill fw-semibold">
+            {{ produit.get_categorie_display }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations produit -->
+    <div class="col-lg-6">
+      <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-2 px-3 py-1 rounded-pill">
+        Article certifié SmartShop
+      </span>
+
+      <h1 class="display-6 fw-bold mb-2">{{ produit.nom }}</h1>
+
+      <div class="d-flex align-items-baseline gap-2 mb-3">
+        <span class="price display-5 fw-bold text-primary">{{ produit.prix }}</span>
+        <span class="fs-4 fw-semibold text-muted">FCFA</span>
+      </div>
+
+      <div class="mb-4">
+        {% if produit.stock > 10 %}
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+            ✓ En stock ({{ produit.stock }} unités disponibles)
+          </span>
+        {% elif produit.stock > 0 %}
+          <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill">
+            ⚠️ Stock limité : seulement {{ produit.stock }} restant(s)
+          </span>
+        {% else %}
+          <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+            ✕ Épuisé pour le moment
+          </span>
+        {% endif %}
+      </div>
+
+      <div class="bg-white p-4 rounded-4 shadow-sm mb-4">
+        <h6 class="fw-bold text-uppercase small text-muted mb-2">Description</h6>
+        <p class="mb-0 text-secondary lh-base">
+          {{ produit.description|default:"Article authentique de haute qualité, sélectionné pour vous avec garantie de conformité." }}
+        </p>
+      </div>
+
+      {% if produit.stock > 0 %}
+        <form method="post" action="{% url 'ajouter_panier' produit.pk %}" class="d-grid gap-2 mb-3">
+          {% csrf_token %}
+          <button class="btn btn-warning btn-lg rounded-pill fw-bold shadow py-3">
+            🛒 Ajouter au panier
+          </button>
+        </form>
+      {% else %}
+        <div class="alert alert-warning rounded-4 mb-3">Ce produit est actuellement en rupture de stock.</div>
+      {% endif %}
+
+      <!-- Garanties -->
+      <div class="row g-2 pt-3 border-top mt-2 text-muted small">
+        <div class="col-sm-4 d-flex align-items-center gap-2">
+          <span class="fs-4">🚚</span>
+          <span>Livraison rapide à domicile</span>
+        </div>
+        <div class="col-sm-4 d-flex align-items-center gap-2">
+          <span class="fs-4">🛡️</span>
+          <span>Garantie satisfaction</span>
+        </div>
+        <div class="col-sm-4 d-flex align-items-center gap-2">
+          <span class="fs-4">🔄</span>
+          <span>Retours acceptés sous 7j</span>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <a class="btn btn-link text-decoration-none px-0" href="{% url 'produits' %}">
+          ← Retourner à la liste des produits
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,169 @@
+body {
+  background: #f5f7fb;
+  color: #172337;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #2156a5;
+  text-decoration: none;
+}
+
+.navbar, footer {
+  background: #17212b;
+  color: white;
+}
+
+.navbar {
+  padding: 16px 0;
+}
+
+.navbar-brand {
+  font-size: 1.55rem;
+}
+
+.hero {
+  background: linear-gradient(135deg, #0d213f 0%, #174276 50%, #1f6fb2 100%);
+  color: #fff;
+}
+
+.hero h1 {
+  font-size: clamp(2.3rem, 5vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+.hero h1 span {
+  color: #ffc73d;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: #dce7f7;
+}
+
+.section-title {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.product-card {
+  border: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(24, 58, 91, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  background: #fff;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 35px rgba(24, 58, 91, 0.14);
+}
+
+.product-photo {
+  height: 220px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-photo img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.product-card:hover .product-photo img {
+  transform: scale(1.06);
+}
+
+.price {
+  color: #1264a5;
+  font-weight: 800;
+}
+
+.detail-photo {
+  min-height: 420px;
+  background: #f8fafc;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.detail-photo img {
+  width: 100%;
+  height: 100%;
+  max-height: 480px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.hover-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(24, 58, 91, 0.12) !important;
+}
+
+.hover-card img {
+  transition: transform 0.3s ease;
+}
+
+.hover-card:hover img {
+  transform: scale(1.08);
+}
+
+.feature-strip {
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 18px;
+  padding: 25px;
+  flex-wrap: wrap;
+}
+
+.auth-card {
+  max-width: 520px;
+  margin: auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(24, 58, 91, 0.08);
+}
+
+.auth-card input, .auth-card textarea {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+}
+
+.auth-card label {
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.consent-banner {
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  padding: 20px 0;
+  width: 100%;
+  z-index: 1000;
+  border-top: 1px solid #e2e8f0;
+}
+
+footer {
+  font-size: 0.9rem;
+}

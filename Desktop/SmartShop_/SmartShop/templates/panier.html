@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="h3 fw-bold mb-1">🛒 Mon panier</h1>
+      <p class="text-muted small mb-0">Vérifiez vos articles avant de procéder à la commande.</p>
+    </div>
+    <a href="{% url 'produits' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+      Continuer mes achats
+    </a>
+  </div>
+
+  {% if articles %}
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="table-light small text-uppercase text-muted">
+                <tr>
+                  <th style="min-width: 250px;">Produit</th>
+                  <th>Prix</th>
+                  <th style="min-width: 140px;">Quantité</th>
+                  <th class="text-end">Sous-total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for article in articles %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-3">
+                        <a href="{% url 'detail_produit' article.produit.pk %}" class="d-block rounded-3 overflow-hidden bg-light flex-shrink-0" style="width: 60px; height: 60px;">
+                          {% if article.produit.image %}
+                            <img src="{{ article.produit.image.url }}" alt="{{ article.produit.nom }}" class="w-100 h-100 object-fit-cover">
+                          {% elif article.produit.image_demo_url %}
+                            <img src="{{ article.produit.image_demo_url }}" alt="{{ article.produit.nom }}" class="w-100 h-100 object-fit-cover">
+                          {% else %}
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center">🛍️</div>
+                          {% endif %}
+                        </a>
+                        <div>
+                          <a href="{% url 'detail_produit' article.produit.pk %}" class="text-decoration-none text-dark fw-semibold d-block">
+                            {{ article.produit.nom }}
+                          </a>
+                          <span class="badge bg-light text-muted border small">{{ article.produit.get_categorie_display }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-nowrap">{{ article.produit.prix }} FCFA</td>
+                    <td>
+                      <form method="post" action="{% url 'modifier_panier' article.produit.pk %}" class="d-flex align-items-center gap-2">
+                        {% csrf_token %}
+                        <input
+                          type="number"
+                          min="1"
+                          max="{{ article.produit.stock }}"
+                          name="quantite"
+                          value="{{ article.quantite }}"
+                          class="form-control form-control-sm text-center rounded-3"
+                          style="width: 70px;"
+                        >
+                        <button class="btn btn-outline-secondary btn-sm rounded-3" title="Mettre à jour">
+                          ✓
+                        </button>
+                      </form>
+                    </td>
+                    <td class="text-end fw-bold text-nowrap text-primary">
+                      {{ article.sous_total }} FCFA
+                    </td>
+                    <td class="text-end">
+                      <form method="post" action="{% url 'supprimer_panier' article.produit.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" title="Supprimer">
+                          ✕
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Récapitulatif -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 20px;">
+          <h5 class="fw-bold mb-3">Récapitulatif</h5>
+
+          <div class="d-flex justify-content-between mb-2 text-muted">
+            <span>Nombre d'articles</span>
+            <span>{{ articles|length }}</span>
+          </div>
+
+          <div class="d-flex justify-content-between mb-3 text-muted">
+            <span>Frais de livraison</span>
+            <span class="text-success fw-semibold">Gratuit</span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-baseline border-top pt-3 mb-4">
+            <span class="h6 fw-bold mb-0">Total</span>
+            <span class="h4 fw-bold text-primary mb-0">{{ total }} FCFA</span>
+          </div>
+
+          <div class="d-grid gap-2">
+            <a href="{% url 'commander' %}" class="btn btn-success btn-lg rounded-pill fw-bold shadow">
+              Passer la commande →
+            </a>
+          </div>
+
+          <div class="mt-3 text-center small text-muted">
+            🔒 Paiement et commande 100% sécurisés
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="card p-5 text-center border-0 rounded-4 shadow-sm bg-white my-4">
+      <div class="mb-3 fs-1">🛒</div>
+      <h3 class="h4 fw-bold">Votre panier est actuellement vide</h3>
+      <p class="text-muted mb-4">Ajoutez des articles de notre catalogue pour passer votre commande.</p>
+      <div>
+        <a href="{% url 'produits' %}" class="btn btn-primary rounded-pill px-4">
+          Découvrir les produits
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

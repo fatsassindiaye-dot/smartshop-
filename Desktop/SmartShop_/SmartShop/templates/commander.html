@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">📝 Finaliser ma commande</h1>
+    <p class="text-muted small mb-0">Renseignez vos coordonnées de livraison pour valider votre panier.</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Formulaire de commande -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="alert alert-info border-0 rounded-3 small mb-4">
+          ℹ️ <strong>Mode démonstration :</strong> aucun paiement bancaire n'est requis. La commande sera enregistrée et visible dans votre espace <em>Mes commandes</em>.
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+
+          {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold small text-muted" for="{{ field.id_for_label }}">
+                {{ field.label }}
+              </label>
+              {{ field }}
+              {% if field.help_text %}
+                <div class="form-text small">{{ field.help_text }}</div>
+              {% endif %}
+              {% for error in field.errors %}
+                <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold shadow mt-3">
+            ✓ Confirmer la commande
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Récapitulatif avec miniatures photos -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <h5 class="fw-bold mb-3">Articles commandés</h5>
+
+        <div class="list-group list-group-flush mb-3">
+          {% for article in articles %}
+            <div class="list-group-item px-0 py-2 d-flex align-items-center gap-3 border-0">
+              <div class="rounded-3 overflow-hidden bg-light flex-shrink-0" style="width: 50px; height: 50px;">
+                {% if article.produit.image %}
+                  <img src="{{ article.produit.image.url }}" alt="{{ article.produit.nom }}" class="w-100 h-100 object-fit-cover">
+                {% elif article.produit.image_demo_url %}
+                  <img src="{{ article.produit.image_demo_url }}" alt="{{ article.produit.nom }}" class="w-100 h-100 object-fit-cover">
+                {% else %}
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center">🛍️</div>
+                {% endif %}
+              </div>
+              <div class="flex-grow-1">
+                <div class="small fw-semibold text-truncate" style="max-width: 180px;">{{ article.produit.nom }}</div>
+                <small class="text-muted">Quantité : {{ article.quantite }} × {{ article.produit.prix }} FCFA</small>
+              </div>
+              <div class="text-end fw-semibold small text-nowrap">
+                {{ article.sous_total }} FCFA
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="border-top pt-3">
+          <div class="d-flex justify-content-between mb-2 small text-muted">
+            <span>Frais de livraison</span>
+            <span class="text-success fw-bold">Gratuit</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-baseline mb-0">
+            <span class="h6 fw-bold mb-0">Total à payer</span>
+            <span class="h4 fw-bold text-primary mb-0">{{ total }} FCFA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

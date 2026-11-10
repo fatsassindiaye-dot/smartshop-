@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="h3 fw-bold mb-1">📦 Mes commandes</h1>
+      <p class="text-muted small mb-0">Retrouvez l'historique et le suivi de toutes vos commandes passées.</p>
+    </div>
+    <a href="{% url 'produits' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+      🛒 Continuer mes achats
+    </a>
+  </div>
+
+  {% for commande in commandes %}
+    <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+      <!-- En-tête de la commande -->
+      <div class="card-header bg-white border-bottom p-3 p-md-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary-subtle text-primary p-2 rounded-3 fw-bold fs-5">
+            #{{ commande.pk }}
+          </div>
+          <div>
+            <div class="fw-bold">Commande passée le {{ commande.cree_le|date:'d F Y à H:i' }}</div>
+            <div class="text-muted small">Destinataire : {{ commande.nom }} · 📞 {{ commande.telephone }}</div>
+          </div>
+        </div>
+
+        <div class="text-md-end">
+          {% if commande.statut == 'simulation' %}
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+              ● {{ commande.get_statut_display }}
+            </span>
+          {% elif commande.statut == 'annulee' %}
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+              ● {{ commande.get_statut_display }}
+            </span>
+          {% else %}
+            <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 rounded-pill">
+              ● {{ commande.get_statut_display }}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Corps : Articles commandés -->
+      <div class="card-body p-3 p-md-4">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <tbody>
+              {% for ligne in commande.lignes.all %}
+                <tr>
+                  <td style="width: 70px;">
+                    <a href="{% url 'detail_produit' ligne.produit.pk %}" class="d-block rounded-3 overflow-hidden bg-light" style="width: 56px; height: 56px;">
+                      {% if ligne.produit.image %}
+                        <img src="{{ ligne.produit.image.url }}" alt="{{ ligne.nom_produit }}" class="w-100 h-100 object-fit-cover">
+                      {% else %}
+                        <img src="{{ ligne.produit.image_demo_url }}" alt="{{ ligne.nom_produit }}" class="w-100 h-100 object-fit-cover">
+                      {% endif %}
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{% url 'detail_produit' ligne.produit.pk %}" class="text-decoration-none text-dark fw-semibold d-block">
+                      {{ ligne.nom_produit }}
+                    </a>
+                    <span class="text-muted small">Prix unitaire : {{ ligne.prix_unitaire }} FCFA</span>
+                  </td>
+                  <td class="text-center text-muted fw-bold">
+                    × {{ ligne.quantite }}
+                  </td>
+                  <td class="text-end fw-bold text-nowrap">
+                    {{ ligne.sous_total }} FCFA
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Adresse de livraison -->
+        <div class="bg-light p-3 rounded-3 mt-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div class="small">
+            <span class="text-muted">📍 Adresse de livraison :</span>
+            <strong class="text-dark ms-1">{{ commande.adresse }}</strong>
+          </div>
+          <div class="text-md-end">
+            <span class="text-muted small">Total réglé :</span>
+            <span class="h5 fw-bold text-primary ms-2 mb-0">{{ commande.total }} FCFA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card p-5 text-center border-0 rounded-4 shadow-sm my-4">
+      <div class="mb-3 fs-1">🛍️</div>
+      <h3 class="h4 fw-bold">Aucune commande pour le moment</h3>
+      <p class="text-muted mb-4">Vous n'avez pas encore passé de commande sur SmartShop.</p>
+      <div>
+        <a href="{% url 'produits' %}" class="btn btn-primary rounded-pill px-4">
+          Explorer les produits
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
